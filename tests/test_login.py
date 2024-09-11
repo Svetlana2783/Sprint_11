@@ -1,10 +1,11 @@
-from selenium import webdriver
+# tests/test_login.py
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
-from locators.locators import LOGIN_EMAIL_FIELD, LOGIN_PASSWORD_FIELD, LOGIN_BUTTON, PERSONAL_ACCOUNT_BUTTON, \
-    REGISTRATION_BUTTON, RESET_PASSWORD_BUTTON
-
+from locators.locators import LOGIN_EMAIL_FIELD, LOGIN_PASSWORD_FIELD, LOGIN_BUTTON, PERSONAL_ACCOUNT_BUTTON, REGISTRATION_BUTTON, RESET_PASSWORD_BUTTON
+from data import MAIN_PAGE_URL, REGISTRATION_PAGE_URL, RESET_PASSWORD_PAGE_URL
+from helpers import generate_unique_email, generate_password
 
 def login(driver, email, password):
     wait = WebDriverWait(driver, 10)
@@ -15,33 +16,34 @@ def login(driver, email, password):
     password_field.send_keys(password)
     login_button.click()
 
-    # Проверка успешного входа
-    assert driver.current_url == "https://stellarburgers.nomoredomains.site", "Login failed"
-
-def test_login_from_main_page():
-    driver = webdriver.Chrome()
-    driver.get("https://stellarburgers.nomoredomains.site")
+def test_login_from_main_page(driver):
+    driver.get(MAIN_PAGE_URL)
     driver.find_element(By.XPATH, "//button[text()='Войти в аккаунт']").click()
-    login(driver, "svetlanashaykhlislamova987@ya.ru", "svetlana987")
-    driver.quit()
+    unique_email = generate_unique_email()
+    unique_password = generate_password()
+    login(driver, unique_email, unique_password)
+    assert driver.current_url == MAIN_PAGE_URL, "Login failed"
 
-def test_login_from_personal_account_button():
-    driver = webdriver.Chrome()
-    driver.get("https://stellarburgers.nomoredomains.site")
+def test_login_from_personal_account_button(driver):
+    driver.get(MAIN_PAGE_URL)
     driver.find_element(By.XPATH, PERSONAL_ACCOUNT_BUTTON).click()
-    login(driver, "svetlanashaykhlislamova987@ya.ru", "svetlana987")
-    driver.quit()
+    unique_email = generate_unique_email()
+    unique_password = generate_password()
+    login(driver, unique_email, unique_password)
+    assert driver.current_url == MAIN_PAGE_URL, "Login failed"
 
-def test_login_from_registration_form():
-    driver = webdriver.Chrome()
-    driver.get("https://stellarburgers.nomoredomains.site/register")
+def test_login_from_registration_form(driver):
+    driver.get(REGISTRATION_PAGE_URL)
     driver.find_element(By.XPATH, REGISTRATION_BUTTON).click()
-    login(driver, "svetlanashaykhlislamova987@ya.ru", "svetlana987")
-    driver.quit()
+    unique_email = generate_unique_email()
+    unique_password = generate_password()
+    login(driver, unique_email, unique_password)
+    assert driver.current_url == MAIN_PAGE_URL, "Login failed"
 
-def test_login_from_reset_password_form():
-    driver = webdriver.Chrome()
-    driver.get("https://stellarburgers.nomoredomains.site/forgot-password")
+def test_login_from_reset_password_form(driver):
+    driver.get(RESET_PASSWORD_PAGE_URL)
     driver.find_element(By.XPATH, RESET_PASSWORD_BUTTON).click()
-    login(driver, "svetlanashaykhlislamova987@ya.ru", "svetlana987")
-    driver.quit()
+    unique_email = generate_unique_email()
+    unique_password = generate_password()
+    login(driver, unique_email, unique_password)
+    assert driver.current_url == MAIN_PAGE_URL, "Login failed"

@@ -1,23 +1,24 @@
-# tests/test_navigation.py
-
-from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.ui import WebDriverWait
-from locators.locators import PERSONAL_ACCOUNT_BUTTON, CONSTRUCTOR_BUTTON, LOGO_BUTTON
-from data import MAIN_PAGE_URL, PROFILE_PAGE_URL
+from src.locators import Locators
+from data import URL
 
-def test_navigation(driver):
-    driver.get(MAIN_PAGE_URL)
-    wait = WebDriverWait(driver, 10)
-    # Переход в личный кабинет
-    wait.until(expected_conditions.presence_of_element_located((By.XPATH, PERSONAL_ACCOUNT_BUTTON))).click()
-    assert driver.current_url == PROFILE_PAGE_URL, "Failed to navigate to personal account"
+class TestNavigation:
 
-    # Переход из личного кабинета в конструктор по клику на «Конструктор»
-    wait.until(expected_conditions.presence_of_element_located((By.XPATH, CONSTRUCTOR_BUTTON))).click()
-    assert driver.current_url == MAIN_PAGE_URL, "Failed to navigate to constructor via constructor button"
+    def test_navigate_to_personal_account(self, driver):
+        driver.get(URL.MAIN_PAGE_URL)
+        wait = WebDriverWait(driver, 10)
+        wait.until(expected_conditions.presence_of_element_located(*Locators.PERSONAL_ACCOUNT_BUTTON)).click()
+        assert driver.current_url == URL.PROFILE_PAGE_URL
 
-    # Переход из личного кабинета в конструктор по клику на логотип Stellar Burgers
-    driver.get(PROFILE_PAGE_URL)
-    wait.until(expected_conditions.presence_of_element_located((By.XPATH, LOGO_BUTTON))).click()
-    assert driver.current_url == MAIN_PAGE_URL, "Failed to navigate to constructor via logo button"
+    def test_navigate_to_constructor_from_personal_account(self, driver):
+        driver.get(URL.PROFILE_PAGE_URL)
+        wait = WebDriverWait(driver, 10)
+        wait.until(expected_conditions.presence_of_element_located(*Locators.CONSTRUCTOR_BUTTON)).click()
+        assert driver.current_url == URL.MAIN_PAGE_URL
+
+    def test_navigate_to_constructor_via_logo(self, driver):
+        driver.get(URL.PROFILE_PAGE_URL)
+        wait = WebDriverWait(driver, 10)
+        wait.until(expected_conditions.presence_of_element_located(*Locators.LOGO)).click()
+        assert driver.current_url == URL.MAIN_PAGE_URL
